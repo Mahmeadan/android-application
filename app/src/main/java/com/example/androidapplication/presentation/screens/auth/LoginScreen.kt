@@ -30,11 +30,12 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.androidapplication.R
 import com.example.androidapplication.common.Routes
 import com.example.androidapplication.presentation.MainViewModel.MainViewModel
 import com.example.androidapplication.presentation.common.CheckSignedIn
 import com.example.androidapplication.presentation.common.ProgressSpinner
-import com.ist.ondemand.R
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.ist.ondemand"
+    namespace = "com.example.androidapplication"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.ist.ondemand"
+        applicationId = "com.example.androidapplication"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

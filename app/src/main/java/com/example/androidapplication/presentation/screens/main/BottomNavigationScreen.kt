@@ -9,22 +9,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.androidapplication.common.Routes
 import com.example.androidapplication.presentation.common.navigateTo
-import com.ist.ondemand.R
 
-enum class BottomNavigationItem(val icon: Int, val navDestination: Routes) {
-    SERVICES(R.drawable.ic_home, Routes.Services),
-    SEARCH(R.drawable.ic_search, Routes.Search),
-    MYSERVICES(R.drawable.ic_posts,Routes.MyServices),
-    PROFILE(R.drawable.ic_posts,Routes.Profile),
+
+enum class BottomNavigationItem(val icon: ImageVector, val navDestination: Routes) {
+    SERVICES(Icons.Default.Build, Routes.Services),
+    SEARCH(Icons.Default.Search, Routes.Search),
+    MYSERVICES(Icons.Default.Settings,Routes.MyServices),
+    PROFILE(Icons.Default.Person,Routes.Profile),
 }
 
 
@@ -38,8 +43,9 @@ fun BottomNavigationMenu(selectedItem: BottomNavigationItem, navController: NavC
             .background(Color.White)
     ) {
         for (item in BottomNavigationItem.values()) {
+
             Image(
-                painter = painterResource(id = item.icon),
+                imageVector = item.icon,
                 contentDescription = null,
                 modifier = Modifier
                     .size(40.dp)

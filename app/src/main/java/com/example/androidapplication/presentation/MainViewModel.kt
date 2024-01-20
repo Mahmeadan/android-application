@@ -1,16 +1,23 @@
 package com.example.androidapplication.presentation.MainViewModel
 
+import android.net.Uri
+import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.androidapplication.common.USERS
 import com.example.androidapplication.data.Event
+import com.example.androidapplication.data.ServicesData
 import com.example.androidapplication.data.UserData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.UUID
 import javax.inject.Inject
+
 
 /**
  * ViewModel class for the main screen of the application.
@@ -114,6 +121,7 @@ class MainViewModel @Inject constructor(
     fun onLogin(email: String, pass: String) {
 
         inProgress.value = true
+        //Method to sign in a user with an email address and password.
         auth.signInWithEmailAndPassword(email, pass)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
@@ -228,5 +236,85 @@ class MainViewModel @Inject constructor(
         val message = if (customMessage.isEmpty()) errorMsg else "$customMessage: $errorMsg"
         popupNotification.value = Event(message)
     }
+    fun updateProfileData(name: String, username: String, bio: String) {
+        createOrUpdateProfile(name, username, bio)
+    }
+
+    fun onLogout() {
+        auth.signOut()
+        signedIn.value = false
+        userData.value = null
+        popupNotification.value = Event("Logged out")
+    }
+
+
+    /**
+     * Uploads an image to the storage using the provided URI.
+     *
+     * @param uri The URI of the image to be uploaded.
+     * @param onSuccess Callback function to be executed when the image upload is successful.
+     */
+
+    /**
+     * Uploads an image to the Firebase storage.
+     *
+     * @param uri The URI of the image to be uploaded.
+     * @param onSuccess Callback function to be executed when the image upload is successful.
+     */
+
+    private fun uploadImage(uri: Uri, onSuccess: (Uri) -> Unit) {
+        inProgress.value = true
+
+
+        val storageRef = storage.reference
+        val uuid = UUID.randomUUID()
+        val imageRef = storageRef.child("$uuid")
+        val uploadTask = imageRef.putFile(uri)
+
+        uploadTask
+            .addOnSuccessListener {
+                val result = it.metadata?.reference?.downloadUrl
+                Log.d( "uploadImage: $result", "uploadImage: $result")
+                result?.addOnSuccessListener(onSuccess)
+            }
+            .addOnFailureListener { exc ->
+                handleException(exc)
+                inProgress.value = false
+            }
+    }
+    fun uploadProfileImage(uri: Uri) {
+        uploadImage(uri) {
+            createOrUpdateProfile(imageUrl = it.toString())
+            updateServiceImageData(it.toString())
+        }
+    }
+//Upload service image
+
+    //create service
+    private fun onCreateService(imageUri: Uri, description: String, onPostSuccess: () -> Unit){
+        //fetch userid
+        //get the current username
+        //get the current user image
+
+        //check if the current user id is null
+        //Assign the services data model a variable
+        //use the set method to set the data
+
+    }
+    private fun updateServiceImageData(imageUrl: String) {
+
+
+    }
+    private fun convertServices(documents: QuerySnapshot, outState: MutableState<List<ServicesData>>) {
+        val newServices = mutableListOf<ServicesData>()
+        documents.forEach { doc ->
+            val services= doc.toObject<ServicesData>()
+            newServices.add(services)
+        }
+        val sortedServices = newServices.sortedByDescending { it.time }
+        outState.value = sortedServices
+    }
+    //Add roles controller
+
 
 }
